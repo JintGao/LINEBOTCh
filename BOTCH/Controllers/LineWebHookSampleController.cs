@@ -54,27 +54,24 @@ namespace BOTCH.Controllers
                             var ReceivedMessage = isRock.LineBot.Utility.Parsing(postData);
 
                             //建立actions，作為ButtonTemplate的用戶回覆行為
-                            var actions = new List<isRock.LineBot.TemplateActionBase>();
-                            actions.Add(new isRock.LineBot.MessageActon()
-                            { label = "點選這邊等同用戶直接輸入某訊息", text = "/例如這樣" });
-                            actions.Add(new isRock.LineBot.UriActon()
-                            { label = "點這邊開啟網頁", uri = new Uri("http://www.google.com") });
-                            actions.Add(new isRock.LineBot.PostbackActon()
-                            { label = "點這邊發生postack", data = "abc=aaa&def=111" });
+                            var act1 = new isRock.LineBot.MessageAction()
+                            { text = "test action1", label = "test action1" };
+                            var act2 = new isRock.LineBot.MessageAction()
+                            { text = "test action2", label = "test action2" };
 
-                            //單一Button Template Message
-                            var ButtonTemplate = new isRock.LineBot.ButtonsTemplate()
+                            var tmp = new isRock.LineBot.ButtonsTemplate()
                             {
-                                altText = "替代文字(在無法顯示Button Template的時候顯示)",
-                                text = "AAA",
-                                title = "BBB",
-                                //設定圖片
-                                thumbnailImageUrl = new Uri("https://i.imgur.com/QqjmONg.png"),
-                                actions = actions //設定回覆動作
+                                text = "Button Template text",
+                                title = "Button Template title",
+                                thumbnailImageUrl = new Uri("https://i.imgur.com/wVpGCoP.png"),
                             };
-                            var UserID = isRock.LineBot.Utility.Parsing(postData).events[0].source.userId;
+
+                            tmp.actions.Add(act1);
+                            tmp.actions.Add(act2);
+
+                            //var UserID = isRock.LineBot.Utility.Parsing(postData).events[0].source.userId;
                             //bot.PushMessage(UserID, ButtonTemplate);
-                            bot.ReplyMessage(ChannelAccessToken, new isRock.LineBot.TemplateMessage(ButtonTemplate));
+                            this.ReplyMessage(LineEvent.replyToken, new isRock.LineBot.TemplateMessage(tmp));
 
                         }
                         else if(LineEvent.message.text.Contains("圖-"))
@@ -95,6 +92,8 @@ namespace BOTCH.Controllers
             }
             catch (Exception ex)
             {
+                var LineEvent = this.ReceivedMessage.events.FirstOrDefault();
+                this.ReplyMessage(LineEvent.replyToken, "發生錯誤:\n" + ex.Message);
                 //如果發生錯誤，傳訊息給Admin
                 this.PushMessage(AdminUserId, "發生錯誤:\n" + ex.Message);
                 //response OK
