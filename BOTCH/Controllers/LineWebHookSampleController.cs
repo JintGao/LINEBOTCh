@@ -47,6 +47,12 @@ namespace BOTCH.Controllers
                         }
                         else if(LineEvent.message.text.Contains("圖片問答-"))
                         {
+                            isRock.LineBot.Bot bot;
+                            bot = new isRock.LineBot.Bot(channelAccessToken);
+                            //取得 http Post RawData(should be JSO
+                            string postData = Request.Content.ReadAsStringAsync().Result;
+                            var ReceivedMessage = isRock.LineBot.Utility.Parsing(postData);
+
                             //建立actions，作為ButtonTemplate的用戶回覆行為
                             var actions = new List<isRock.LineBot.TemplateActionBase>();
                             actions.Add(new isRock.LineBot.MessageActon()
@@ -63,16 +69,19 @@ namespace BOTCH.Controllers
                                 text = "AAA",
                                 title = "BBB",
                                 //設定圖片
-                                thumbnailImageUrl = new Uri("https://scontent-tpe1-1.xx.fbcdn.net/v/t31.0-8/15800635_1324407647598805_917901174271992826_o.jpg?oh=2fe14b080454b33be59cdfea8245406d&oe=591D5C94"),
+                                thumbnailImageUrl = new Uri("https://i.imgur.com/QqjmONg.png"),
                                 actions = actions //設定回覆動作
                             };
+                            var UserID = isRock.LineBot.Utility.Parsing(postData).events[0].source.userId;
+                            //bot.PushMessage(UserID, ButtonTemplate);
+                            bot.ReplyMessage(ChannelAccessToken, new isRock.LineBot.TemplateMessage(ButtonTemplate));
 
                         }
                         else if(LineEvent.message.text.Contains("圖-"))
                         {
 
                             //isRock.LineBot.ImagemapMessage img = new isRock.LineBot.ImagemapMessage(new Uri("http://"));
-                            this.ReplyMessage(LineEvent.replyToken, new Uri("https://圖片位置/22-124303-d8b2c4de-9a8c-48da-83f1-7c0d36de3ab6.png"));
+                            this.ReplyMessage(LineEvent.replyToken, new Uri("https://i.imgur.com/QqjmONg.png"));
                         }
                         else
                         {
