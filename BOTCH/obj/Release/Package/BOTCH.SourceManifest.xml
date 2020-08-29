@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <sitemanifest>
-  <IisApp path="D:\Exercise\LINEBOTCh\BOTCH\BOTCH\obj\Release\Package\PackageTmp" />
-  <setAcl path="D:\Exercise\LINEBOTCh\BOTCH\BOTCH\obj\Release\Package\PackageTmp" setAclResourceType="Directory" />
-  <setAcl path="D:\Exercise\LINEBOTCh\BOTCH\BOTCH\obj\Release\Package\PackageTmp" setAclUser="anonymousAuthenticationUser" setAclResourceType="Directory" />
+  <IisApp path="D:\Exercise\LINEBOT_SVN\LINEBOTCh\BOTCH\obj\Release\Package\PackageTmp" />
+  <setAcl path="D:\Exercise\LINEBOT_SVN\LINEBOTCh\BOTCH\obj\Release\Package\PackageTmp" setAclResourceType="Directory" />
+  <setAcl path="D:\Exercise\LINEBOT_SVN\LINEBOTCh\BOTCH\obj\Release\Package\PackageTmp" setAclUser="anonymousAuthenticationUser" setAclResourceType="Directory" />
 </sitemanifest>
