@@ -96,6 +96,44 @@ namespace BOTCH.Controllers
  
         }
 
+
+        //讀取 戰鬥暫存
+        public List<string> ReadFTempEntries(string key)
+        {
+
+            string sheet = "戰鬥暫存";
+            string Start = "A";
+            string End = "N";
+
+            var range = $"{sheet}!{Start}:{End}";
+            SpreadsheetsResource.ValuesResource.GetRequest request =
+                    service.Spreadsheets.Values.Get(SpreadsheetId, range);
+
+            var response = request.Execute();
+            IList<IList<object>> values = response.Values;
+
+            int 第幾筆 = 1;
+            List<string> 回傳暫存資訊 = new List<string>();
+            //return values;
+            if (values != null && values.Count > 0)
+            {
+                foreach (var row in values)
+                {
+                    if (row[0].ToString() == key)
+                    {
+                        回傳暫存資訊 = new List<string>() { row[HC.A].ToString(), row[HC.B].ToString(), row[HC.C].ToString(), row[HC.D].ToString(), row[HC.E].ToString()
+                            , row[HC.F].ToString(), row[HC.G].ToString(), row[HC.H].ToString(), row[HC.I].ToString(), row[HC.J].ToString(), row[HC.K].ToString(), row[HC.L].ToString(), row[HC.M].ToString(), row[HC.N].ToString(),第幾筆.ToString() };
+
+                        break;
+                    }
+                    第幾筆++;
+                }
+            }
+
+            return 回傳暫存資訊;
+
+        }
+
         //讀取 特定技能
         public List<string> ReadSkillEntries(string name)
         {
@@ -163,6 +201,50 @@ namespace BOTCH.Controllers
             }
 
             return 回傳職業資訊;
+
+        }
+
+
+        //讀取 特定玩家、怪物 卡牌清單
+        public List<string> CardList(string 名稱, string 類型)
+        {
+            List<string> 卡牌清單 = new List<string>();
+            IList<IList<object>> values ;
+            int 卡牌起始欄位 = 0;
+            //int 卡牌結束欄位 = 0;
+
+            if (類型 == "玩家")
+            {
+                values = ReadEntries("角色牌庫", "A", "M");
+                卡牌起始欄位 = HC.B;
+                //卡牌結束欄位 = HC.M;
+
+
+            }
+            else //if(類型 == "怪物")
+            {
+                 values = ReadEntries("怪物牌庫", "A", "G");
+                卡牌起始欄位 = HC.B;
+                //卡牌結束欄位 = HC.G;
+            }
+
+            foreach (var row in values)
+            {
+                if (row[0].ToString() == 名稱)
+                {
+                    for (int i = 卡牌起始欄位; i < row.Count; i++)
+                    {
+                        if (row[i].ToString() != "")
+                        {
+                            卡牌清單.Add(row[i].ToString());
+                        }
+                    }
+
+                    break;
+                }
+            }
+
+            return 卡牌清單;
 
         }
 

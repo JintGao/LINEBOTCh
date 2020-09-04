@@ -114,6 +114,7 @@
     <Compile Include="Controllers\GooglesHeet.cs" />
     <Compile Include="Controllers\LineWebHookSampleController.cs" />
     <Compile Include="Controllers\MessageCommand.cs" />
+    <Compile Include="Controllers\Practice.cs" />
     <Compile Include="Controllers\TestLUISController.cs" />
     <Compile Include="default.aspx.cs">
       <DependentUpon>default.aspx</DependentUpon>
