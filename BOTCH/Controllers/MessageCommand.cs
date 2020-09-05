@@ -253,6 +253,9 @@ namespace BOTCH.Controllers
                         switch (怪物.怪物出牌.類型)
                         {
                             case 1:
+                                //怪物攻擊被克制無效沒事
+                                戰鬥描述 += 怪物.名稱 +"的攻擊 被防禦住了!\n";
+                                break;
                             case 2:
                             case 3:
                                 A防禦(玩家, 怪物, 玩家.玩家出牌.數值, ref 戰鬥描述);
@@ -270,6 +273,9 @@ namespace BOTCH.Controllers
                         switch (玩家.玩家出牌.類型)
                         {
                             case 1:
+                                //玩家攻擊被克制無效沒事
+                                戰鬥描述 += 玩家.名稱 +"的攻擊 被防禦住了!\n";
+                                break;
                             case 2:
                             case 3:
                                 B防禦(玩家, 怪物, 怪物.怪物出牌.數值, ref 戰鬥描述);
@@ -292,6 +298,7 @@ namespace BOTCH.Controllers
                         switch (怪物.怪物出牌.類型)
                         {
                             case 1:
+                                B克制A(玩家, 怪物, ref 戰鬥描述);
                             case 2:
                             case 3:
                                 A恢復(玩家, ref 戰鬥描述);
@@ -313,6 +320,7 @@ namespace BOTCH.Controllers
                         switch (玩家.玩家出牌.類型)
                         {
                             case 1:
+                                 A克制B(玩家, 怪物, ref 戰鬥描述);
                             case 2:
                             case 3:
                                 B恢復(怪物, ref 戰鬥描述);
