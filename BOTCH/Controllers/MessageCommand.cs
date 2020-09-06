@@ -228,6 +228,7 @@ namespace BOTCH.Controllers
                 responseMsgs.Add(new isRock.LineBot.TextMessage("你感覺到一股危險的壓迫逼近"));
             else if (LineEvent.Contains("每日動作"))
             {
+                玩家 玩家 = new 玩家("測試人員");
                 CarouselTemplate = 遊戲機制.每日動作抽卡並暫存(玩家, ref responseMsgs);
                 responseMsgs.Add(new isRock.LineBot.TemplateMessage(CarouselTemplate));
             }
@@ -671,10 +672,10 @@ namespace BOTCH.Controllers
                         if (卡牌名稱 == row[HC.A].ToString())
                         {
                             地城卡牌 卡牌 = new 地城卡牌();
-                            地城卡牌.卡牌名稱 = row[HC.A].ToString();
-                            地城卡牌.圖片網址 = row[HC.C].ToString();
-                            地城卡牌.順序編號 = 目前編號;
-                            牌庫.Add(地城卡牌);
+                            卡牌.卡牌名稱 = row[HC.A].ToString();
+                            卡牌.順序編號 = 目前編號;
+                            卡牌.圖片網址 = row[HC.C].ToString();
+                            牌庫.Add(卡牌);
                             目前編號++;
                             break;
                         }
@@ -688,6 +689,7 @@ namespace BOTCH.Controllers
             public string 卡牌名稱 = "";
             public double 卡牌機率 = 0;
             public int 順序編號 = 0;
+            public string 圖片網址 = "";
         }
 
         //暫存 、怪物出牌、 玩家抽卡 、戰鬥描述
@@ -774,23 +776,31 @@ namespace BOTCH.Controllers
 
                 _key = _key.Replace('-', '=');
 
+                List<string> 卡牌清單 = new List<string>();
+
+                牌庫初始化 牌庫初始化 = new 牌庫初始化(卡牌清單);
+
+                地城牌庫初始化 地城牌庫初始化 = new 地城牌庫初始化(卡牌清單);
+
                 Random rdm1 = new Random(unchecked((int)DateTime.Now.Ticks));
 
-                int 每日行動抽到 = 0
+                int 每日行動抽到 = 0;
 
                 if(玩家.動作次數 >5)
-                    每日行動抽到 = dm1.Next(0, 地城牌庫初始化.牌庫.Count);
+                    每日行動抽到 = rdm1.Next(0, 地城牌庫初始化.牌庫.Count);
                 else
-                    每日行動抽到 = dm1.Next(0, 地城牌庫初始化.牌庫.Count - 1);
+                    每日行動抽到 = rdm1.Next(0, 地城牌庫初始化.牌庫.Count - 1);
 
                 List<地城卡牌> 玩家抽到 = new List<地城卡牌>();
 
+                int 牌庫數量;
                 int 玩家抽到編號 = 0;
                 // 玩家抽牌(抽三張)
                 while (玩家抽到.Count < 3)
                 {
+                    牌庫數量 = 玩家.牌庫.Count - 1;
                     玩家抽到編號 = rdm1.Next(0, 牌庫數量);
-                    if (!玩家抽到.Contains(玩家.牌庫[玩家抽到編號]))
+                    if (!玩家抽到.Contains(地城牌庫初始化.牌庫[玩家抽到編號]))
                     {
                         玩家抽到.Add(地城牌庫初始化.牌庫[玩家抽到編號]);
                     }
@@ -807,11 +817,11 @@ namespace BOTCH.Controllers
                 responseMsgs.Add(new isRock.LineBot.TextMessage("請選擇該回合動作"));
 
                 var actions1 = new List<isRock.LineBot.TemplateActionBase>();
-                actions1.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = "RPG-TeM-每日動作-選擇-"+ 卡牌名稱 + _key+"-" + 玩家抽到[0].卡牌名稱 });
+                actions1.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = "RPG-TeM-每日動作-選擇-"+ 玩家抽到[0].卡牌名稱 + _key+"-" + 玩家抽到[0].卡牌名稱 });
                 var actions2 = new List<isRock.LineBot.TemplateActionBase>();
-                actions2.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = "RPG-TeM-每日動作-選擇-"+ 卡牌名稱 + _key+"-" + 玩家抽到[1].卡牌名稱 });
+                actions2.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = "RPG-TeM-每日動作-選擇-"+ 玩家抽到[0].卡牌名稱 + _key+"-" + 玩家抽到[1].卡牌名稱 });
                 var actions3 = new List<isRock.LineBot.TemplateActionBase>();
-                actions3.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = "RPG-TeM-每日動作-選擇-"+ 卡牌名稱 + _key+"-" + 玩家抽到[2].卡牌名稱 });
+                actions3.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = "RPG-TeM-每日動作-選擇-"+ 玩家抽到[0].卡牌名稱 + _key+"-" + 玩家抽到[2].卡牌名稱 });
 
                 var Column1 = new isRock.LineBot.Column
                 {
