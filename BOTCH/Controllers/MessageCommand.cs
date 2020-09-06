@@ -313,7 +313,6 @@ namespace BOTCH.Controllers
                         {
                             case 1:
                                 B克制A(玩家, 怪物, ref 戰鬥描述);
-                                break;
                             case 2:
                             case 3:
                                 A恢復(玩家, ref 戰鬥描述);
@@ -336,7 +335,6 @@ namespace BOTCH.Controllers
                         {
                             case 1:
                                  A克制B(玩家, 怪物, ref 戰鬥描述);
-                                break;
                             case 2:
                             case 3:
                                 B恢復(怪物, ref 戰鬥描述);
