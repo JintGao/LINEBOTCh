@@ -218,20 +218,6 @@ namespace BOTCH.Controllers
                 else
                     responseMsgs.Add(new isRock.LineBot.TextMessage("此戰已戰鬥過 或 暫存無資料"));
             }
-            else if (LineEvent.Contains("每日動作-選擇-戰鬥"))
-                responseMsgs.Add(new isRock.LineBot.TextMessage("遭遇戰開始,遇見哥布林"));
-            else if (LineEvent.Contains("每日動作-選擇-休息"))
-                responseMsgs.Add(new isRock.LineBot.TextMessage("休息回復體力"));
-            else if (LineEvent.Contains("每日動作-選擇-商店"))
-                responseMsgs.Add(new isRock.LineBot.TextMessage("買東西囉"));
-            else if (LineEvent.Contains("每日動作-選擇-魔王"))
-                responseMsgs.Add(new isRock.LineBot.TextMessage("你感覺到一股危險的壓迫逼近"));
-            else if (LineEvent.Contains("每日動作"))
-            {
-                玩家 玩家 = new 玩家("測試人員");
-                CarouselTemplate = 遊戲機制.每日動作抽卡並暫存(玩家, ref responseMsgs);
-                responseMsgs.Add(new isRock.LineBot.TemplateMessage(CarouselTemplate));
-            }
             else if (LineEvent.Contains("遭遇戰"))
             {
                 responseMsgs.Add(new isRock.LineBot.TextMessage("遭遇戰開始,遇見哥布林"));
@@ -313,6 +299,7 @@ namespace BOTCH.Controllers
                         {
                             case 1:
                                 B克制A(玩家, 怪物, ref 戰鬥描述);
+                                break;
                             case 2:
                             case 3:
                                 A恢復(玩家, ref 戰鬥描述);
@@ -335,6 +322,7 @@ namespace BOTCH.Controllers
                         {
                             case 1:
                                  A克制B(玩家, 怪物, ref 戰鬥描述);
+                                break;
                             case 2:
                             case 3:
                                 B恢復(怪物, ref 戰鬥描述);
@@ -650,46 +638,6 @@ namespace BOTCH.Controllers
 
         }
 
-        public class 地城牌庫初始化
-        {
-
-            public List<地城卡牌> 牌庫 = new List<地城卡牌>();
-            BOTCH.Controllers.GooglesHeet GH = new GooglesHeet();
-
-            public 地城牌庫初始化(List<string> 卡牌清單)
-            {
-                GH.SstGooglesHeet();
-                int 目前編號 = 0;
-
-                var values = GH.ReadEntries("地城卡片", "A", "H");
-
-                foreach (string 卡牌名稱 in 卡牌清單)
-                {
-                    foreach (var row in values)
-                    {
-                        if (卡牌名稱 == row[HC.A].ToString())
-                        {
-                            地城卡牌 卡牌 = new 地城卡牌();
-                            卡牌.卡牌名稱 = row[HC.A].ToString();
-                            卡牌.順序編號 = 目前編號;
-                            卡牌.圖片網址 = row[HC.C].ToString();
-                            牌庫.Add(卡牌);
-                            目前編號++;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        public class 地城卡牌
-        {
-            public string 卡牌名稱 = "";
-            public double 卡牌機率 = 0;
-            public int 順序編號 = 0;
-            public string 圖片網址 = "";
-        }
-
         //暫存 、怪物出牌、 玩家抽卡 、戰鬥描述
         public class 遊戲機制    
         {
@@ -766,97 +714,6 @@ namespace BOTCH.Controllers
                 怪物.怪物出牌 = 怪物.取得卡牌資訊(暫存資訊[HC.M]);
 
                 return 怪物;
-            }
-
-            public isRock.LineBot.CarouselTemplate 每日動作抽卡並暫存(玩家 玩家,ref List<isRock.LineBot.MessageBase> responseMsgs)
-            {
-                _key = Guid.NewGuid().ToString();
-
-                _key = _key.Replace('-', '=');
-
-                List<string> 卡牌清單 = new List<string>();
-
-                牌庫初始化 牌庫初始化 = new 牌庫初始化(卡牌清單);
-
-                地城牌庫初始化 地城牌庫初始化 = new 地城牌庫初始化(卡牌清單);
-
-                Random rdm1 = new Random(unchecked((int)DateTime.Now.Ticks));
-
-                int 每日行動抽到 = 0;
-
-                if(玩家.動作次數 >5)
-                    每日行動抽到 = rdm1.Next(0, 地城牌庫初始化.牌庫.Count);
-                else
-                    每日行動抽到 = rdm1.Next(0, 地城牌庫初始化.牌庫.Count - 1);
-
-                List<地城卡牌> 玩家抽到 = new List<地城卡牌>();
-
-                int 牌庫數量;
-                int 玩家抽到編號 = 0;
-                // 玩家抽牌(抽三張)
-                while (玩家抽到.Count < 3)
-                {
-                    牌庫數量 = 玩家.牌庫.Count - 1;
-                    玩家抽到編號 = rdm1.Next(0, 牌庫數量);
-                    if (!玩家抽到.Contains(地城牌庫初始化.牌庫[玩家抽到編號]))
-                    {
-                        玩家抽到.Add(地城牌庫初始化.牌庫[玩家抽到編號]);
-                    }
-                }
-                string 抽到卡牌 = "";
-                foreach (地城卡牌 卡牌 in 玩家抽到)
-                {
-                    if (玩家抽到[玩家抽到.Count - 1] == 卡牌)
-                        抽到卡牌 += 卡牌.順序編號;
-                    else
-                        抽到卡牌 += 卡牌.順序編號 + ",";
-                }
-                //玩家選擇地城顯示
-                responseMsgs.Add(new isRock.LineBot.TextMessage("請選擇該回合動作"));
-
-                var actions1 = new List<isRock.LineBot.TemplateActionBase>();
-                actions1.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = "RPG-TeM-每日動作-選擇-"+ 玩家抽到[0].卡牌名稱 + _key+"-" + 玩家抽到[0].卡牌名稱 });
-                var actions2 = new List<isRock.LineBot.TemplateActionBase>();
-                actions2.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = "RPG-TeM-每日動作-選擇-"+ 玩家抽到[0].卡牌名稱 + _key+"-" + 玩家抽到[1].卡牌名稱 });
-                var actions3 = new List<isRock.LineBot.TemplateActionBase>();
-                actions3.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = "RPG-TeM-每日動作-選擇-"+ 玩家抽到[0].卡牌名稱 + _key+"-" + 玩家抽到[2].卡牌名稱 });
-
-                var Column1 = new isRock.LineBot.Column
-                {
-                    text = "",
-                    title = 玩家抽到[0].卡牌名稱,
-                    //設定圖片
-                    thumbnailImageUrl = new Uri(玩家抽到[0].圖片網址),
-                    actions = actions1 //設定回覆動作
-                };
-
-                var Column2 = new isRock.LineBot.Column
-                {
-                    text = "",
-                    title = 玩家抽到[1].卡牌名稱,
-                    //設定圖片
-                    thumbnailImageUrl = new Uri(玩家抽到[1].圖片網址),
-                    actions = actions2 //設定回覆動作
-                };
-
-                var Column3 = new isRock.LineBot.Column
-                {
-                    text = "",
-                    title = 玩家抽到[2].卡牌名稱,
-                    //設定圖片
-                    thumbnailImageUrl = new Uri(玩家抽到[2].圖片網址),
-                    actions = actions3 //設定回覆動作
-                };
-                //建立CarouselTemplate
-                var CarouselTemplate = new isRock.LineBot.CarouselTemplate();
-
-                CarouselTemplate.columns.Add(Column1);
-                CarouselTemplate.columns.Add(Column2);
-                CarouselTemplate.columns.Add(Column3);
-
-
-                return CarouselTemplate;
-
             }
 
            
