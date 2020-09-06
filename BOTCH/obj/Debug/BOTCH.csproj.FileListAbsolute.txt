@@ -168,3 +168,7 @@ D:\Exercise\LINEBOT_SVN\LINEBOTCh\BOTCH\bin\zh-Hant\System.Net.Http.Formatting.r
 D:\Exercise\LINEBOT_SVN\LINEBOTCh\BOTCH\bin\zh-Hant\System.Web.Http.resources.dll
 D:\Exercise\LINEBOT_SVN\LINEBOTCh\BOTCH\bin\zh-Hant\System.Web.Http.WebHost.resources.dll
 D:\Exercise\LINEBOT_SVN\LINEBOTCh\BOTCH\obj\Debug\BOTCH.csproj.CopyComplete
+C:\Users\Wilson Wu-PC\Source\Repos\JintGao\LINEBOTCh\BOTCH\obj\Debug\BOTCH.csprojAssemblyReference.cache
+C:\Users\Wilson Wu-PC\Source\Repos\JintGao\LINEBOTCh\BOTCH\obj\Debug\BOTCH.csproj.CoreCompileInputs.cache
+C:\Users\Wilson Wu-PC\Source\Repos\JintGao\LINEBOTCh\BOTCH\obj\Debug\BOTCH.dll
+C:\Users\Wilson Wu-PC\Source\Repos\JintGao\LINEBOTCh\BOTCH\obj\Debug\BOTCH.pdb
