@@ -174,18 +174,20 @@ namespace BOTCH.Controllers
                     //初始化對戰資料
                     怪物 怪物 = 遊戲機制.怪物暫存初始化(暫存資訊);
 
-                    遊戲機制.戰鬥描述(怪物.名稱 + "HP: " + 怪物.血量 + " 出牌: " + 怪物.怪物出牌.卡牌名稱);
+                    string 初始化對戰訊息 = "";
+
+                    初始化對戰訊息 += 怪物.名稱 + "HP: " + 怪物.血量 + " 出牌: " + 怪物.怪物出牌.卡牌名稱 + "\n";
 
                     玩家 玩家 = 遊戲機制.玩家暫存初始化(暫存資訊, LineEvent.Split('-')[5]);
 
-                    遊戲機制.戰鬥描述(玩家.名稱 + "HP:" + 玩家.血量 + " 出牌: " + 玩家.玩家出牌.卡牌名稱);
+                    初始化對戰訊息 += 玩家.名稱 + "HP:" + 玩家.血量 + " 出牌: " + 玩家.玩家出牌.卡牌名稱 + "\n";
 
                     //戰鬥計算
                     戰鬥計算 戰計 = new 戰鬥計算();
 
-                    遊戲機制.戰鬥描述("對戰開始");
+                    初始化對戰訊息 += "對戰開始 \n";
 
-                    遊戲機制.戰鬥描述(戰計.對戰(玩家, 怪物, 遊戲機制.取得戰鬥描述()));
+                    遊戲機制.戰鬥描述(戰計.對戰(玩家, 怪物, 初始化對戰訊息));
 
                     遊戲機制.戰鬥描述(玩家.名稱 + "剩餘HP:" + 玩家.血量 + "  " + 怪物.名稱 + "剩餘HP: " + 怪物.血量);
 
@@ -663,7 +665,7 @@ namespace BOTCH.Controllers
                 GH.SstGooglesHeet();
                 int 目前編號 = 0;
 
-                var values = GH.ReadEntries("地城卡牌", "A", "C");
+                var values = GH.ReadEntries("地城卡牌", "A", "D");
 
                 int flags = 1;
                 foreach (var row in values)
@@ -675,6 +677,7 @@ namespace BOTCH.Controllers
                         卡牌.卡牌機率 = Convert.ToDouble(row[HC.B]);
                         卡牌.順序編號 = 目前編號;
                         卡牌.圖片網址 = row[HC.C].ToString();
+                        卡牌.指令 = row[HC.D].ToString();
                         牌庫.Add(卡牌);
                         目前編號++;
                     }
@@ -692,6 +695,7 @@ namespace BOTCH.Controllers
             public double 卡牌機率 = 0;
             public int 順序編號 = 0;
             public string 圖片網址 = "";
+            public string 指令 = "";
         }
 
         //暫存 、怪物出牌、 玩家抽卡 、戰鬥描述
@@ -817,11 +821,12 @@ namespace BOTCH.Controllers
                 responseMsgs.Add(new isRock.LineBot.TextMessage("請選擇該回合動作"));
 
                 var actions1 = new List<isRock.LineBot.TemplateActionBase>();
-                actions1.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = "RPG-TeM-每日動作-選擇-" + 玩家抽到[0].卡牌名稱 + _key + "-" + 玩家抽到[0].卡牌名稱 });
+                //actions1.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = "RPG-TeM-每日動作-選擇-" + 玩家抽到[0].卡牌名稱 + _key + "-" + 玩家抽到[0].卡牌名稱 });
+                actions1.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = 玩家抽到[0].指令 });
                 var actions2 = new List<isRock.LineBot.TemplateActionBase>();
-                actions2.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = "RPG-TeM-每日動作-選擇-" + 玩家抽到[1].卡牌名稱 + _key + "-" + 玩家抽到[1].卡牌名稱 });
+                actions2.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = 玩家抽到[1].指令 });
                 var actions3 = new List<isRock.LineBot.TemplateActionBase>();
-                actions3.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = "RPG-TeM-每日動作-選擇-" + 玩家抽到[2].卡牌名稱 + _key + "-" + 玩家抽到[2].卡牌名稱 });
+                actions3.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = 玩家抽到[2].指令 });
 
                 var Column1 = new isRock.LineBot.Column
                 {
