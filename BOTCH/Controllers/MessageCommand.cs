@@ -213,10 +213,24 @@ namespace BOTCH.Controllers
                         CarouselTemplate = 遊戲機制.怪物出牌玩家抽卡並暫存(玩家, 怪物, ref responseMsgs);
                         responseMsgs.Add(new isRock.LineBot.TemplateMessage(CarouselTemplate));
                     }
-                    
+
                 }
                 else
                     responseMsgs.Add(new isRock.LineBot.TextMessage("此戰已戰鬥過 或 暫存無資料"));
+            }
+            else if (LineEvent.Contains("每日動作-選擇-戰鬥"))
+                responseMsgs.Add(new isRock.LineBot.TextMessage("遭遇戰開始,遇見哥布林"));
+            else if (LineEvent.Contains("每日動作-選擇-休息"))
+                responseMsgs.Add(new isRock.LineBot.TextMessage("休息回復體力"));
+            else if (LineEvent.Contains("每日動作-選擇-商店"))
+                responseMsgs.Add(new isRock.LineBot.TextMessage("買東西囉"));
+            else if (LineEvent.Contains("每日動作-選擇-魔王"))
+                responseMsgs.Add(new isRock.LineBot.TextMessage("你感覺到一股危險的壓迫逼近"));
+            else if (LineEvent.Contains("每日動作"))
+            {
+                玩家 玩家 = new 玩家("測試人員");
+                CarouselTemplate = 遊戲機制.每日動作抽卡並暫存(玩家, ref responseMsgs);
+                responseMsgs.Add(new isRock.LineBot.TemplateMessage(CarouselTemplate));
             }
             else if (LineEvent.Contains("遭遇戰"))
             {
@@ -226,10 +240,10 @@ namespace BOTCH.Controllers
                 玩家 玩家 = new 玩家("測試人員");
 
                 //ToDo: 流程 顯示對方出牌 -> 牌庫抽三張牌顯示 -> 玩家選一張牌 -> 戰鬥判定 (迴圈)
-                CarouselTemplate = 遊戲機制.怪物出牌玩家抽卡並暫存(玩家, 怪物,ref responseMsgs);
+                CarouselTemplate = 遊戲機制.怪物出牌玩家抽卡並暫存(玩家, 怪物, ref responseMsgs);
 
                 responseMsgs.Add(new isRock.LineBot.TemplateMessage(CarouselTemplate));
-                
+
             }
 
 
@@ -254,7 +268,7 @@ namespace BOTCH.Controllers
                         {
                             case 1:
                                 //怪物攻擊被克制無效沒事
-                                戰鬥描述 += 怪物.名稱 +"的攻擊 被防禦住了!\n";
+                                戰鬥描述 += 怪物.名稱 + "的攻擊 被防禦住了!\n";
                                 break;
                             case 2:
                             case 3:
@@ -274,7 +288,7 @@ namespace BOTCH.Controllers
                         {
                             case 1:
                                 //玩家攻擊被克制無效沒事
-                                戰鬥描述 += 玩家.名稱 +"的攻擊 被防禦住了!\n";
+                                戰鬥描述 += 玩家.名稱 + "的攻擊 被防禦住了!\n";
                                 break;
                             case 2:
                             case 3:
@@ -321,7 +335,7 @@ namespace BOTCH.Controllers
                         switch (玩家.玩家出牌.類型)
                         {
                             case 1:
-                                 A克制B(玩家, 怪物, ref 戰鬥描述);
+                                A克制B(玩家, 怪物, ref 戰鬥描述);
                                 break;
                             case 2:
                             case 3:
@@ -345,7 +359,7 @@ namespace BOTCH.Controllers
                 {
                     if (戰鬥判定 > 0)
                     {
-                        if(玩家.玩家出牌.類型 == 3 && 怪物.怪物出牌.類型 == 1)
+                        if (玩家.玩家出牌.類型 == 3 && 怪物.怪物出牌.類型 == 1)
                             A克制B(玩家, 怪物, ref 戰鬥描述);
                         else
                             B克制A(玩家, 怪物, ref 戰鬥描述);
@@ -447,7 +461,7 @@ namespace BOTCH.Controllers
                 List<int> 目前牌庫 = new List<int>();
 
                 //目前只有玩家會有抽完牌庫的問題
-                if(牌庫.Count == 0)
+                if (牌庫.Count == 0)
                 {
                     List<string> 卡牌清單 = new List<string>();
                     卡牌清單 = GH.CardList(this.名稱, 角色);
@@ -492,7 +506,7 @@ namespace BOTCH.Controllers
                         }
                     }
 
-                    foreach(卡牌 卡牌 in 欲刪除之卡牌)
+                    foreach (卡牌 卡牌 in 欲刪除之卡牌)
                     {
                         this.牌庫.Remove(卡牌);
                     }
@@ -510,13 +524,13 @@ namespace BOTCH.Controllers
             }
         }
 
-        public class 玩家: 戰鬥角色
+        public class 玩家 : 戰鬥角色
         {
             public string 職業 = "";
             public int 樓層 = 0;
             public DateTime 動作日期;
             public int 動作次數 = 0;
- 
+
             public 卡牌 玩家出牌 = new 卡牌();
 
             public 玩家(string 角色名稱)
@@ -638,8 +652,50 @@ namespace BOTCH.Controllers
 
         }
 
+        public class 地城牌庫初始化
+        {
+
+            public List<地城卡牌> 牌庫 = new List<地城卡牌>();
+            BOTCH.Controllers.GooglesHeet GH = new GooglesHeet();
+
+            public 地城牌庫初始化()
+            {
+                GH.SstGooglesHeet();
+                int 目前編號 = 0;
+
+                var values = GH.ReadEntries("地城卡牌", "A", "C");
+
+                int flags = 1;
+                foreach (var row in values)
+                {
+                    if(flags > 1)
+                    { 
+                        地城卡牌 卡牌 = new 地城卡牌();
+                        卡牌.卡牌名稱 = row[HC.A].ToString();
+                        卡牌.卡牌機率 = Convert.ToDouble(row[HC.B]);
+                        卡牌.順序編號 = 目前編號;
+                        卡牌.圖片網址 = row[HC.C].ToString();
+                        牌庫.Add(卡牌);
+                        目前編號++;
+                    }
+
+                    flags++;
+
+                }
+                
+            }
+        }
+
+        public class 地城卡牌
+        {
+            public string 卡牌名稱 = "";
+            public double 卡牌機率 = 0;
+            public int 順序編號 = 0;
+            public string 圖片網址 = "";
+        }
+
         //暫存 、怪物出牌、 玩家抽卡 、戰鬥描述
-        public class 遊戲機制    
+        public class 遊戲機制
         {
             BOTCH.Controllers.GooglesHeet GH = new GooglesHeet();
 
@@ -657,7 +713,7 @@ namespace BOTCH.Controllers
             }
 
 
-            public void 儲存暫存(玩家 玩家,怪物 怪物,int 怪物抽到編號)
+            public void 儲存暫存(玩家 玩家, 怪物 怪物, int 怪物抽到編號)
             {
 
                 List<string> 儲存資料 = new List<string>();
@@ -680,7 +736,7 @@ namespace BOTCH.Controllers
                 GH.CreateEntry("戰鬥暫存", "A", "L", 儲存資料);
             }
 
-            public List<string>  讀取暫存(string Key)
+            public List<string> 讀取暫存(string Key)
             {
                 return GH.ReadFTempEntries(Key);
             }
@@ -695,7 +751,7 @@ namespace BOTCH.Controllers
                 GH.DeleteEntry("戰鬥暫存", "A" + 暫存資訊[暫存資訊.Count - 1], "N");
             }
 
-            public 玩家 玩家暫存初始化(List<string> 暫存資訊 , string 玩家出牌)
+            public 玩家 玩家暫存初始化(List<string> 暫存資訊, string 玩家出牌)
             {
                 玩家 玩家 = new 玩家(暫存資訊[HC.C]);
                 玩家.血量 = Convert.ToInt32(暫存資訊[HC.D]);
@@ -716,8 +772,97 @@ namespace BOTCH.Controllers
                 return 怪物;
             }
 
-           
-            public isRock.LineBot.CarouselTemplate 怪物出牌玩家抽卡並暫存(玩家 玩家 ,怪物 怪物 ,ref List<isRock.LineBot.MessageBase> responseMsgs)
+            public isRock.LineBot.CarouselTemplate 每日動作抽卡並暫存(玩家 玩家, ref List<isRock.LineBot.MessageBase> responseMsgs)
+            {
+                _key = Guid.NewGuid().ToString();
+
+                _key = _key.Replace('-', '=');
+
+                List<string> 卡牌清單 = new List<string>();
+
+                牌庫初始化 牌庫初始化 = new 牌庫初始化(卡牌清單);
+
+                地城牌庫初始化 地城牌庫初始化 = new 地城牌庫初始化();
+
+                Random rdm1 = new Random(unchecked((int)DateTime.Now.Ticks));
+
+                
+
+                List<地城卡牌> 玩家抽到 = new List<地城卡牌>();
+
+                int 牌庫數量;
+                int 每日行動抽到 = 0;
+                // 玩家抽牌(抽三張)
+                while (玩家抽到.Count < 3)
+                {
+                    if (玩家.動作次數 > 5)
+                        每日行動抽到 = rdm1.Next(0, 地城牌庫初始化.牌庫.Count);
+                    else
+                        每日行動抽到 = rdm1.Next(0, 地城牌庫初始化.牌庫.Count - 1);
+
+                    if (!玩家抽到.Contains(地城牌庫初始化.牌庫[每日行動抽到]))
+                    {
+                        玩家抽到.Add(地城牌庫初始化.牌庫[每日行動抽到]);
+                    }
+                }
+                string 抽到卡牌 = "";
+                foreach (地城卡牌 卡牌 in 玩家抽到)
+                {
+                    if (玩家抽到[玩家抽到.Count - 1] == 卡牌)
+                        抽到卡牌 += 卡牌.順序編號;
+                    else
+                        抽到卡牌 += 卡牌.順序編號 + ",";
+                }
+                //玩家選擇地城顯示
+                responseMsgs.Add(new isRock.LineBot.TextMessage("請選擇該回合動作"));
+
+                var actions1 = new List<isRock.LineBot.TemplateActionBase>();
+                actions1.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = "RPG-TeM-每日動作-選擇-" + 玩家抽到[0].卡牌名稱 + _key + "-" + 玩家抽到[0].卡牌名稱 });
+                var actions2 = new List<isRock.LineBot.TemplateActionBase>();
+                actions2.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = "RPG-TeM-每日動作-選擇-" + 玩家抽到[1].卡牌名稱 + _key + "-" + 玩家抽到[1].卡牌名稱 });
+                var actions3 = new List<isRock.LineBot.TemplateActionBase>();
+                actions3.Add(new isRock.LineBot.MessageAction() { label = "選擇此動作", text = "RPG-TeM-每日動作-選擇-" + 玩家抽到[2].卡牌名稱 + _key + "-" + 玩家抽到[2].卡牌名稱 });
+
+                var Column1 = new isRock.LineBot.Column
+                {
+                    text = 玩家抽到[0].卡牌名稱,
+                    title = 玩家抽到[0].卡牌名稱,
+                    //設定圖片
+                    thumbnailImageUrl = new Uri(玩家抽到[0].圖片網址),
+                    actions = actions1 //設定回覆動作
+                };
+
+                var Column2 = new isRock.LineBot.Column
+                {
+                    text = 玩家抽到[1].卡牌名稱,
+                    title = 玩家抽到[1].卡牌名稱,
+                    //設定圖片
+                    thumbnailImageUrl = new Uri(玩家抽到[1].圖片網址),
+                    actions = actions2 //設定回覆動作
+                };
+
+                var Column3 = new isRock.LineBot.Column
+                {
+                    text = 玩家抽到[2].卡牌名稱,
+                    title = 玩家抽到[2].卡牌名稱,
+                    //設定圖片
+                    thumbnailImageUrl = new Uri(玩家抽到[2].圖片網址),
+                    actions = actions3 //設定回覆動作
+                };
+                //建立CarouselTemplate
+                var CarouselTemplate = new isRock.LineBot.CarouselTemplate();
+
+                CarouselTemplate.columns.Add(Column1);
+                CarouselTemplate.columns.Add(Column2);
+                CarouselTemplate.columns.Add(Column3);
+
+
+                return CarouselTemplate;
+
+            }
+
+
+            public isRock.LineBot.CarouselTemplate 怪物出牌玩家抽卡並暫存(玩家 玩家, 怪物 怪物, ref List<isRock.LineBot.MessageBase> responseMsgs)
             {
                 _key = Guid.NewGuid().ToString();
 
@@ -772,11 +917,11 @@ namespace BOTCH.Controllers
                 responseMsgs.Add(new isRock.LineBot.TextMessage("請選擇應對方式"));
 
                 var actions1 = new List<isRock.LineBot.TemplateActionBase>();
-                actions1.Add(new isRock.LineBot.MessageAction() { label = "使用此張卡牌", text = "RPG-TeM-遭遇戰-出牌-" + _key+"-" + 玩家抽到[0].卡牌名稱 });
+                actions1.Add(new isRock.LineBot.MessageAction() { label = "使用此張卡牌", text = "RPG-TeM-遭遇戰-出牌-" + _key + "-" + 玩家抽到[0].卡牌名稱 });
                 var actions2 = new List<isRock.LineBot.TemplateActionBase>();
-                actions2.Add(new isRock.LineBot.MessageAction() { label = "使用此張卡牌", text = "RPG-TeM-遭遇戰-出牌-" + _key+"-" + 玩家抽到[1].卡牌名稱 });
+                actions2.Add(new isRock.LineBot.MessageAction() { label = "使用此張卡牌", text = "RPG-TeM-遭遇戰-出牌-" + _key + "-" + 玩家抽到[1].卡牌名稱 });
                 var actions3 = new List<isRock.LineBot.TemplateActionBase>();
-                actions3.Add(new isRock.LineBot.MessageAction() { label = "使用此張卡牌", text = "RPG-TeM-遭遇戰-出牌-" + _key+"-" + 玩家抽到[2].卡牌名稱 });
+                actions3.Add(new isRock.LineBot.MessageAction() { label = "使用此張卡牌", text = "RPG-TeM-遭遇戰-出牌-" + _key + "-" + 玩家抽到[2].卡牌名稱 });
 
                 var Column1 = new isRock.LineBot.Column
                 {
